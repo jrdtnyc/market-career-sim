@@ -7,7 +7,7 @@ export const createUser = async (user) => {
         VALUES ($1, $2)
         RETURNING *
     `;
-  const response = await client.query(SQL, [user.username, user.password]);
+  const response = await db.query(SQL, [user.username, user.password]);
   return response.rows[0];
 };
 
@@ -16,7 +16,7 @@ export const fetchUsers = async () => {
         SELECT *
         FROM users
     `;
-  const response = await client.query(SQL);
+  const response = await db.query(SQL);
   return response.rows;
 };
 /* For debugging! */

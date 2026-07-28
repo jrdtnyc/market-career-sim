@@ -1,3 +1,5 @@
+import db from "#db/client";
+
 export const createProducts = async (newProduct) => {
   const { name, description, price, image } = newGame;
   const SQL = `
@@ -5,7 +7,7 @@ export const createProducts = async (newProduct) => {
         VALUES ($1, $2, $3, $4)
         RETURNING *
     `;
-  const response = await client.query(SQL, [name, description, price, image]);
+  const response = await db.query(SQL, [name, description, price, image]);
   return response.rows[0];
 };
 
@@ -14,6 +16,6 @@ export const fetchProducts = async () => {
         SELECT *
         FROM products
     `;
-  const response = await client.query(SQL);
+  const response = await db.query(SQL);
   return response.rows;
 };

@@ -37,5 +37,7 @@ async function seed() {
 `;
   await db.query(SQL);
   console.log("🌱 Database seeded.");
+  const test = createUser({ username: "John Doe", password: "mrtest" });
+  //const test2 = createUser({ username: "Jane Doe", password: "mrstest" });
 }
 export default seed;
