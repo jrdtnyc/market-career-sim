@@ -1,22 +1,55 @@
 import db from "#db/client";
+import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
 
-/* For debugging! */
-export const createUser = async (user) => {
+export const createUser = async (newUser) => {
+  if (!newUser.username.trim() || !newUser.password.trim()) {
+    throw Error("Please provide a combination of username and password!");
+  }
+
+  newUser.password = await bcrypt.hash(newUser.password, 10);
   const SQL = `
         INSERT INTO users (username, password)
         VALUES ($1, $2)
         RETURNING *
     `;
-  const response = await db.query(SQL, [user.username, user.password]);
-  return response.rows[0];
+  const response = await db.query(SQL, [newUser.username, newUser.password]);
+  return response.rows[0]; //Return the created record
 };
 
+/* For debugging! */
 export const fetchUsers = async () => {
   const SQL = `
         SELECT *
         FROM users
     `;
   const response = await db.query(SQL);
-  return response.rows;
+  return response.rows; //
 };
 /* For debugging! */
+
+export const authenticate = async (credentials) => {
+  const SQL = `
+SELECT id, password
+FROM users
+WHERE username =$1
+`;
+  const response = await db.query(SQL, [credentials.username]);
+  if (!response.rows.length) {
+    const error = new Error("Unable to authenticate!");
+    error.status = 401;
+    throw error;
+  }
+
+  const valid = await bcrypt.compare(
+    credentials.password,
+    response.rows[0].password,
+  );
+  if (!valid) {
+    const error = new Error("Unable to authenticate!");
+    error.status = 401;
+    throw error;
+  }
+
+  return jwt.sign({ id: response.rows[0].id }, process.env.JWT_SECRET);
+};
