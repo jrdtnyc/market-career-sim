@@ -64,3 +64,19 @@ export async function getUserById(id) {
   const response = await db.query(SQL, [id]);
   return response.rows;
 }
+
+/*This is for middleware! */
+export const findUserByToken = async (token) => {
+  const payload = await jwt.verify(token, process.env.JWT_SECRET);
+  const SQL = `
+SELECT id, username FROM users 
+WHERE id = $1
+`;
+  const response = await db.query(SQL, [payload.id]);
+  if (!response.rows.length) {
+    const error = new Error("Invalid auth token!");
+    error.status = 401;
+    throw error;
+  }
+  return response.rows[0];
+};

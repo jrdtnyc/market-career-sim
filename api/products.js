@@ -22,7 +22,7 @@ productRouter.post("/", async (req, res, next) => {
 
 productRouter.get("/:id", async (req, res, next) => {
   if (!req.body) {
-    return res.status(400);
+    return res.status(400).send("400 Error: Record Not found!");
   }
   const { id } = req.params;
   res.send(await getProductById(id));

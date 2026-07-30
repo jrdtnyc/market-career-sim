@@ -1,6 +1,7 @@
 import express from "express";
 export const userRouter = express.Router();
 import { fetchUsers, createUser, authenticate } from "#db/users";
+import { isLoggedIn } from "#middleware/authMiddleware";
 
 /*http://localhost:3000/market/users/ */
 
@@ -39,6 +40,8 @@ userRouter.post("/login", async (req, res, next) => {
 });
 /*Login*/
 
-userRouter.get("/me", async (req, res, next) => {});
+userRouter.get("/me", isLoggedIn, async (req, res, next) => {
+  console.log("User Token is valid");
+});
 
 export default userRouter; //NOTE!
