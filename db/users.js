@@ -53,3 +53,14 @@ WHERE username =$1
 
   return jwt.sign({ id: response.rows[0].id }, process.env.JWT_SECRET);
 };
+
+//getUserById
+export async function getUserById(id) {
+  const SQL = `
+  SELECT *
+  FROM users
+  WHERE id = $1
+  `;
+  const response = await db.query(SQL, [id]);
+  return response.rows;
+}
