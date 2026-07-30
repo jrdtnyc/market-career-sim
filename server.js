@@ -9,7 +9,7 @@ app.use("/market", router); /* --> http://localhost:3000/market/ */
 const init = async () => {
   await db.connect();
   console.log("Connected to Market Database!");
-  //await seed();
+  await seed(); //Run to seed fresh db
   const PORT = process.env.PORT || 3000;
   app.listen(PORT, () => {
     console.log(`listening on port ${PORT}`);
