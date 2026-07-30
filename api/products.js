@@ -1,5 +1,6 @@
 import express from "express";
 export const productRouter = express.Router();
+import { isLoggedIn } from "#middleware/authMiddleware";
 import { createProducts, fetchProducts, getProductById } from "#db/products";
 
 /* http://localhost:3000/market/products/ */

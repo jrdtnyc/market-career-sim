@@ -40,8 +40,11 @@ userRouter.post("/login", async (req, res, next) => {
 });
 /*Login*/
 
+/* Test authMiddleware isLoggedIn */
 userRouter.get("/me", isLoggedIn, async (req, res, next) => {
   console.log("User Token is valid");
+  res.send(req.user);
 });
+/* Test authMiddleware isLoggedIn  */
 
 export default userRouter; //NOTE!
