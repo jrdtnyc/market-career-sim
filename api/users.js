@@ -44,6 +44,11 @@ userRouter.post("/login", async (req, res, next) => {
 userRouter.get("/me", isLoggedIn, async (req, res, next) => {
   console.log("User Token is valid");
   res.send(req.user);
+
+  /* this is how you get your loggedin id */
+  const test = req.user;
+  const { id } = test;
+  console.log(`This is your logged in ${id}`);
 });
 /* Test authMiddleware isLoggedIn  */
 

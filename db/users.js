@@ -65,7 +65,7 @@ export async function getUserById(id) {
   return response.rows;
 }
 
-/*This is for middleware! Verify token! */
+/*This is for middleware! Verify token and throw error if nothing is found */
 export const findUserByToken = async (token) => {
   const payload = await jwt.verify(token, process.env.JWT_SECRET);
   const SQL = `
