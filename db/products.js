@@ -29,3 +29,14 @@ export async function getProductById(id) {
   const response = await db.query(SQL, [id]);
   return response.rows;
 }
+
+//sends an array of all orders made by the user that include this product
+export async function getUserOrdersByProduct(user, product) {
+  console.log(user, product);
+  const SQL = `
+SELECT * FROM orders WHERE id = (SELECT order_id FROM orders_products where product_id = $2)
+and user_id = $1
+  `;
+  const response = await db.query(SQL, [user, product]);
+  return response.rows;
+}

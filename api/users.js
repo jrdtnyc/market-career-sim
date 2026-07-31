@@ -3,7 +3,7 @@ export const userRouter = express.Router();
 import { fetchUsers, createUser, authenticate } from "#db/users";
 import { isLoggedIn } from "#middleware/authMiddleware";
 
-/*http://localhost:3000/market/users/ */
+/* http://localhost:3000/market/users/ */
 
 /* For debugging! */
 userRouter.get("/", async (req, res, next) => {
@@ -11,7 +11,7 @@ userRouter.get("/", async (req, res, next) => {
 });
 /* For debugging! */
 
-/*Register*/
+/*Register - http://localhost:3000/market/users/register */
 userRouter.post("/register", async (req, res, next) => {
   if (!req.body)
     return res.status(400).send("400 Error: Request body required.");
@@ -23,9 +23,8 @@ userRouter.post("/register", async (req, res, next) => {
 
   res.send(await createUser(req.body));
 });
-/*Register*/
 
-/*Login*/
+/*Login - http://localhost:3000/market/users/login */
 userRouter.post("/login", async (req, res, next) => {
   if (!req.body)
     return res.status(400).send("400 Error: Request body required.");
@@ -44,7 +43,7 @@ userRouter.post("/login", async (req, res, next) => {
 userRouter.get("/me", isLoggedIn, async (req, res, next) => {
   console.log("User Token is valid");
   res.send(req.user);
-
+  console.log(req.user);
   /* this is how you get your loggedin id */
   const test = req.user;
   const { id } = test;

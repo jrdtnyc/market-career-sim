@@ -9,6 +9,7 @@ export const fetchOrders = async () => {
   return response.rows;
 };
 
+/* This is for seeding and debugging */
 export const createOrders = async (newOrder) => {
   const { date, note, user_id } = newOrder;
   const SQL = `
@@ -17,6 +18,18 @@ export const createOrders = async (newOrder) => {
         RETURNING *
     `;
   const response = await db.query(SQL, [date, note, user_id]);
+  return response.rows[0];
+};
+
+/* For actual use */
+export const createOrder = async (date, note, userIdentifier) => {
+  console.log(`These are my SQL IDs ${userIdentifier} ${date} ${note}`);
+  const SQL = `
+        INSERT INTO orders(date, note, user_id)
+        VALUES ($1, $2, $3)
+        RETURNING *
+    `;
+  const response = await db.query(SQL, [date, note, userIdentifier]);
   return response.rows[0];
 };
 
