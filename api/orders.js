@@ -6,6 +6,7 @@ import {
   fetchMyOrders,
   createOrders,
   createOrder,
+  getUserOrdersByID,
 } from "#db/orders";
 
 /* Fetch Orders http://localhost:3000/market/orders/ 
@@ -16,7 +17,7 @@ orderRouter.get("/", async (req, res, next) => {
 /* Fetch Orders http://localhost:3000/market/orders/ */
 orderRouter.get("/", isLoggedIn, async (req, res, next) => {
   //const { id: thisUserID } = req.user;
-  res.send(await fetchMyOrders(req.user));
+  res.send(await fetchMyOrders(req.user)).status(201);
 });
 
 /* Create Orders http://localhost:3000/market/orders/ <--Send */
@@ -33,4 +34,19 @@ orderRouter.post("/", isLoggedIn, async (req, res, next) => {
     return res.status(400).send("400 Error: Missing date!");
   }
   res.send(await createOrder(date, note, thisUserId));
+});
+
+/* Return orders that belong to the signed in user based on submitted */
+orderRouter.get("/:id", isLoggedIn, async (req, res, next) => {
+  const { id: thisOrderID } = req.params;
+  const { id: thisUserID } = req.user;
+  if (!thisUserID) {
+    return res.status(403).send("403 Error: Please log in");
+  }
+  const dbResponse = await getUserOrdersByID(thisUserID, thisOrderID); ////
+  if (dbResponse.length == 0) {
+    return res.status(404).send("404 Error: This order does not exist!");
+  }
+  const dbResponse2 = await getUserOrdersByID(thisUserID, thisOrderID);
+  res.send(dbResponse2);
 });

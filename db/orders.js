@@ -56,3 +56,14 @@ RETURNING *
   const response = await db.query(SQL, [order_id, product_id, quantity]);
   return response.rows[0];
 };
+
+//////////////////////////////////////////////////
+export async function getUserOrdersByID(user, order) {
+  console.log(user, order);
+  const SQL = `
+SELECT * FROM orders WHERE id = $2
+and user_id = $1
+  `;
+  const response = await db.query(SQL, [user, order]);
+  return response.rows;
+}
