@@ -8,6 +8,7 @@ import {
   createOrder,
   getUserOrdersByID,
   getProductsInOrder,
+  updateProductQuantityInOrder,
 } from "#db/orders";
 
 /* Fetch Orders http://localhost:3000/market/orders/ 
@@ -64,5 +65,47 @@ orderRouter.get("/:id/products", isLoggedIn, async (req, res, next) => {
     return res.status(404).send("404 Error: This order does not exist!");
   }
   const dbResponse2 = await getProductsInOrder(thisUserID, thisOrderID);
+  res.send(dbResponse2);
+});
+
+/* Get products in user's order http://localhost:3000/market/orders/:id/products */
+orderRouter.get("/:id/products", isLoggedIn, async (req, res, next) => {
+  const { id: thisOrderID } = req.params;
+  const { id: thisUserID } = req.user;
+  if (!thisUserID) {
+    return res.status(403).send("403 Error: Please log in to your account");
+  }
+  const dbResponse = await getProductsInOrder(thisUserID, thisOrderID); ////
+  if (dbResponse.length == 0) {
+    return res.status(404).send("404 Error: This order does not exist!");
+  }
+  const dbResponse2 = await getProductsInOrder(thisUserID, thisOrderID);
+  res.send(dbResponse2);
+});
+
+/* Update products in user's order http://localhost:3000/market/orders/:id/products */
+orderRouter.post("/:id/products", isLoggedIn, async (req, res, next) => {
+  if (!req.body)
+    return res.status(400).send("400 Error: Request body required.");
+
+  const { product_id, quantity } = req.body;
+  if (!product_id || !quantity) {
+    return res.status(400).send("Missing information!");
+  }
+  const { id: thisOrderID } = req.params;
+  const { id: thisUserID } = req.user;
+  if (!thisUserID) {
+    return res.status(403).send("403 Error: Please log in to your account");
+  }
+  const dbResponse = await getProductsInOrder(thisUserID, thisOrderID); ////
+  if (dbResponse.length == 0) {
+    return res.status(404).send("404 Error: This order does not exist!");
+  }
+  const dbResponse2 = await updateProductQuantityInOrder(
+    thisUserID,
+    thisOrderID,
+    product_id,
+    quantity,
+  );
   res.send(dbResponse2);
 });
