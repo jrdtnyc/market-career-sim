@@ -7,6 +7,7 @@ import {
   createOrders,
   createOrder,
   getUserOrdersByID,
+  getProductsInOrder,
 } from "#db/orders";
 
 /* Fetch Orders http://localhost:3000/market/orders/ 
@@ -36,7 +37,7 @@ orderRouter.post("/", isLoggedIn, async (req, res, next) => {
   res.send(await createOrder(date, note, thisUserId));
 });
 
-/* Return orders that belong to the signed in user based on submitted */
+/* Return orders that belong to the signed in user based on submitted http://localhost:3000/market/orders/:id */
 orderRouter.get("/:id", isLoggedIn, async (req, res, next) => {
   const { id: thisOrderID } = req.params;
   const { id: thisUserID } = req.user;
@@ -48,5 +49,20 @@ orderRouter.get("/:id", isLoggedIn, async (req, res, next) => {
     return res.status(404).send("404 Error: This order does not exist!");
   }
   const dbResponse2 = await getUserOrdersByID(thisUserID, thisOrderID);
+  res.send(dbResponse2);
+});
+
+/* Get the products in a user's order http://localhost:3000/market/orders/:id/products */
+orderRouter.get("/:id/products", isLoggedIn, async (req, res, next) => {
+  const { id: thisOrderID } = req.params;
+  const { id: thisUserID } = req.user;
+  if (!thisUserID) {
+    return res.status(403).send("403 Error: Please log in to your account");
+  }
+  const dbResponse = await getProductsInOrder(thisUserID, thisOrderID); ////
+  if (dbResponse.length == 0) {
+    return res.status(404).send("404 Error: This order does not exist!");
+  }
+  const dbResponse2 = await getProductsInOrder(thisUserID, thisOrderID);
   res.send(dbResponse2);
 });

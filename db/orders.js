@@ -57,12 +57,28 @@ RETURNING *
   return response.rows[0];
 };
 
-//////////////////////////////////////////////////
+/* Return a users orders */
 export async function getUserOrdersByID(user, order) {
   console.log(user, order);
   const SQL = `
 SELECT * FROM orders WHERE id = $2
 and user_id = $1
+  `;
+  const response = await db.query(SQL, [user, order]);
+  return response.rows;
+}
+
+export async function getProductsInOrder(user, order) {
+  console.log(user, order);
+  const SQL = `
+WITH prod_id_table AS
+(SELECT  orders_products.product_id,orders_products.quantity FROM orders_products WHERE orders_products.order_id=
+(SELECT id FROM orders WHERE id = $2 AND user_id =$1))
+SELECT prod_id_table.product_id, prod_id_table.quantity, products.title, products.description, products.price
+FROM prod_id_table
+LEFT JOIN products
+ON prod_id_table.product_id = products.id;
+
   `;
   const response = await db.query(SQL, [user, order]);
   return response.rows;
