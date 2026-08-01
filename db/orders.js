@@ -78,7 +78,6 @@ SELECT prod_id_table.product_id, prod_id_table.quantity, products.title, product
 FROM prod_id_table
 LEFT JOIN products
 ON prod_id_table.product_id = products.id;
-
   `;
   const response = await db.query(SQL, [user, order]);
   return response.rows;
