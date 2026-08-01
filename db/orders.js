@@ -84,8 +84,7 @@ ON prod_id_table.product_id = products.id;
   return response.rows;
 }
 
-//////////////////////////////////
-
+/* Update the quantity of the selected item in the user's order */
 export async function updateProductQuantityInOrder(user, order, product, qty) {
   console.log(`This is your ${user}, ${order}, ${product}, ${qty}`);
   const SQL = `

@@ -107,5 +107,5 @@ orderRouter.post("/:id/products", isLoggedIn, async (req, res, next) => {
     product_id,
     quantity,
   );
-  res.send(dbResponse2);
+  res.send(dbResponse2).status(201);
 });
